@@ -27,13 +27,16 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
       console.warn("Token expired. Attempting refresh...");
+
       try {
         const refreshToken = localStorage.getItem("refresh_token");
         if (!refreshToken) throw new Error("No refresh token available");
 
-        // Request new access token
         const res = await axios.post("https://backend-jtcd.onrender.com/user/token/refresh/", {
           refresh: refreshToken,
         });
@@ -41,9 +44,8 @@ api.interceptors.response.use(
         const newAccessToken = res.data.access;
         localStorage.setItem("access_token", newAccessToken);
 
-        // Retry original request with new token
-        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(error.config);
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return api(originalRequest);
       } catch (refreshError) {
         console.error("Token refresh failed. Redirecting to login.");
         localStorage.removeItem("access_token");
@@ -55,6 +57,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default api;
 
