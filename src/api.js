@@ -31,7 +31,7 @@ api.interceptors.response.use(
         }
 
         // Request new access token
-        const res = await axios.post("http://localhost:8000/api/user/token/refresh/", {
+        const res = await axios.post("https://backend-jtcd.onrender.com/api/user/token/refresh/", {
           refresh: refreshToken,
         });
 
