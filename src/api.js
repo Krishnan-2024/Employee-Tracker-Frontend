@@ -5,7 +5,7 @@ const getToken = () => localStorage.getItem("access_token");
 
 // Create an Axios instance
 const api = axios.create({
- baseURL: "https://backend-jtcd.onrender.com/api",
+ baseURL: "https://backend-jtcd.onrender.com",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -31,7 +31,7 @@ api.interceptors.response.use(
         }
 
         // Request new access token
-        const res = await axios.post("https://backend-jtcd.onrender.com/api/user/token/refresh/", {
+        const res = await axios.post("https://backend-jtcd.onrender.com/user/token/refresh/", {
           refresh: refreshToken,
         });
 
