@@ -5,7 +5,7 @@ const getToken = () => localStorage.getItem("access_token");
 
 // Create an Axios instance
 const api = axios.create({
- baseURL: "https://backend-jtcd.onrender.com/api",
+ baseURL: "https://backend-jtcd.onrender.com",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -31,8 +31,7 @@ api.interceptors.response.use(
         }
 
         // Request new access token
-       const res = await axios.post("https://backend-jtcd.onrender.com/api/user/token/refresh/", {
-
+        const res = await axios.post("https://backend-jtcd.onrender.com/user/token/refresh/", {
           refresh: refreshToken,
         });
 
@@ -66,7 +65,8 @@ export const resetPassword = (token, data) => api.post(`/user/reset-password/${t
 export const getProfile = async () => {
   return await api.get(`/user/profile/`, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+
     },
   });
 };
@@ -75,7 +75,8 @@ export const updateProfile = async (formData) => {
   return await api.patch("/user/profile/update/", formData, {
     headers: {
       "Content-Type": "multipart/form-data",  // Ensure FormData is processed
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+
     },
   });
 };
