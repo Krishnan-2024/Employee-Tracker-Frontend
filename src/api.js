@@ -37,7 +37,7 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem("refresh_token");
         if (!refreshToken) throw new Error("No refresh token available");
 
-        const res = await axios.post("https://backend-jtcd.onrender.com/users/token/refresh/", {
+        const res = await axios.post("https://backend-jtcd.onrender.com/user/token/refresh/", {
           refresh: refreshToken,
         });
 
