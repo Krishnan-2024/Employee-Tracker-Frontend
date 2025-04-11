@@ -5,18 +5,23 @@ const getToken = () => localStorage.getItem("access_token");
 
 // Create an Axios instance
 const api = axios.create({
- baseURL: "https://backend-jtcd.onrender.com",
-  headers: { "Content-Type": "application/json" },
+  baseURL: "https://backend-jtcd.onrender.com",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 // Request Interceptor: Attach Authorization Token
-api.interceptors.request.use((config) => {
-  const token = getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => Promise.reject(error));
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 // Response Interceptor: Handle Expired Tokens
 api.interceptors.response.use(
@@ -26,9 +31,7 @@ api.interceptors.response.use(
       console.warn("Token expired. Attempting refresh...");
       try {
         const refreshToken = localStorage.getItem("refresh_token");
-        if (!refreshToken) {
-          throw new Error("No refresh token available");
-        }
+        if (!refreshToken) throw new Error("No refresh token available");
 
         // Request new access token
         const res = await axios.post("https://backend-jtcd.onrender.com/user/token/refresh/", {
@@ -37,7 +40,7 @@ api.interceptors.response.use(
 
         const newAccessToken = res.data.access;
         localStorage.setItem("access_token", newAccessToken);
-        
+
         // Retry original request with new token
         error.config.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(error.config);
@@ -45,13 +48,13 @@ api.interceptors.response.use(
         console.error("Token refresh failed. Redirecting to login.");
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/login"; // Redirect to login page
+        window.location.href = "/login";
       }
     }
+
     return Promise.reject(error);
   }
 );
-
 
 export default api;
 
@@ -62,27 +65,18 @@ export const login = (data) => api.post("/user/login/", data);
 export const logout = () => api.post("/user/logout/");
 export const forgotPassword = (data) => api.post("/user/forgot-password/", data);
 export const resetPassword = (token, data) => api.post(`/user/reset-password/${token}/`, data);
-export const getProfile = async () => {
-  return await api.get(`/user/profile/`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
 
+// User Profile APIs
+export const getProfile = () => api.get("/user/profile/");
+export const updateProfile = (formData) =>
+  api.patch("/user/profile/update/", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
     },
   });
-};
-
-export const updateProfile = async (formData) => {
-  return await api.patch("/user/profile/update/", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",  // Ensure FormData is processed
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-
-    },
-  });
-};
 
 // Work Log APIs
 export const getWorkLogs = () => api.get("/v1/worklogs/");
-export const getWorkLogById = (id) => api.get(`/v1/worklogs/${id}/`); 
+export const getWorkLogById = (id) => api.get(`/v1/worklogs/${id}/`);
 export const createWorkLog = (data) => api.post("/v1/worklogs/", data);
 export const updateWorkLog = (id, data) => api.patch(`/v1/worklogs/${id}/`, data);
