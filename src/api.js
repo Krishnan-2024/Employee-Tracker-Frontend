@@ -5,7 +5,7 @@ const getToken = () => localStorage.getItem("access_token");
 
 // Create an Axios instance using the environment variable
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL, // Correct usage: uses the value from your .env file
+  baseURL: process.env.REACT_APP_API_URL, // Uses the value from your .env file
   headers: { "Content-Type": "application/json" },
 });
 
@@ -34,9 +34,10 @@ api.interceptors.response.use(
         if (!refreshToken) throw new Error("No refresh token available");
 
         // Request new access token using the environment variable
-        const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/token/refresh/`, {
-          refresh: refreshToken,
-        });
+        const res = await axios.post(
+          `${process.env.REACT_APP_API_URL}/user/token/refresh/`,
+          { refresh: refreshToken }
+        );
 
         const newAccessToken = res.data.access;
         localStorage.setItem("access_token", newAccessToken);
