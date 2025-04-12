@@ -76,7 +76,7 @@ export const getProfile = async () => {
 export const updateProfile = async (formData) => {
   return await api.patch("/user/profile/update/", formData, {
     headers: {
-      "Content-Type": "multipart/form-data",
+      "Content-Type": "multipart/form-data",  // Ensure FormData is processed
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     },
   });
