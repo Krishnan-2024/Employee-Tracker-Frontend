@@ -3,9 +3,12 @@ import axios from "axios";
 // Get token from localStorage
 const getToken = () => localStorage.getItem("access_token");
 
-// Create an Axios instance using the environment variable
+// Define the base URL using the environment variable, falling back to localhost if not set
+const baseURL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
+
+// Create an Axios instance using the baseURL from the environment variable
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL, // Uses the value from your .env file
+  baseURL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -26,6 +29,8 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    // Check for 401 errors and prevent infinite loops with _retry flag
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       console.warn("Token expired. Attempting refresh...");
@@ -34,11 +39,9 @@ api.interceptors.response.use(
         if (!refreshToken) throw new Error("No refresh token available");
 
         // Request new access token using the environment variable
-        const res = await axios.post(
-          `${process.env.REACT_APP_API_URL}/user/token/refresh/`,
-          { refresh: refreshToken }
-        );
-
+        const res = await axios.post(`${baseURL}/user/token/refresh/`, {
+          refresh: refreshToken,
+        });
         const newAccessToken = res.data.access;
         localStorage.setItem("access_token", newAccessToken);
 
@@ -64,20 +67,21 @@ export const verifyEmail = (token) => api.get(`/user/verify-email/${token}/`);
 export const login = (data) => api.post("/user/login/", data);
 export const logout = () => api.post("/user/logout/");
 export const forgotPassword = (data) => api.post("/user/forgot-password/", data);
-export const resetPassword = (token, data) => api.post(`/user/reset-password/${token}/`, data);
+export const resetPassword = (token, data) =>
+  api.post(`/user/reset-password/${token}/`, data);
+
+// User Profile APIs
 export const getProfile = async () => {
   return await api.get("/user/profile/", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-    },
+    headers: { Authorization: `Bearer ${getToken()}` },
   });
 };
 
 export const updateProfile = async (formData) => {
   return await api.patch("/user/profile/update/", formData, {
     headers: {
-      "Content-Type": "multipart/form-data",  // Ensure FormData is processed
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${getToken()}`,
     },
   });
 };
