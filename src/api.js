@@ -3,9 +3,9 @@ import axios from "axios";
 // Get token from localStorage
 const getToken = () => localStorage.getItem("access_token");
 
-// Create an Axios instance
+// Create an Axios instance using the environment variable
 const api = axios.create({
-  baseURL: process.env.https://backend-jtcd.onrender.com/api, // Use the environment variable here
+  baseURL: process.env.REACT_APP_API_URL, // Correct usage: uses the value from your .env file
   headers: { "Content-Type": "application/json" },
 });
 
@@ -25,24 +25,25 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401 && !error.config._retry) {
-      error.config._retry = true;
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
       console.warn("Token expired. Attempting refresh...");
       try {
         const refreshToken = localStorage.getItem("refresh_token");
         if (!refreshToken) throw new Error("No refresh token available");
 
-        // Request new access token
-        const res = await axios.post(`${process.env.https://backend-jtcd.onrender.com/api}/user/token/refresh/`, {
+        // Request new access token using the environment variable
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/token/refresh/`, {
           refresh: refreshToken,
         });
-        
+
         const newAccessToken = res.data.access;
         localStorage.setItem("access_token", newAccessToken);
 
         // Retry original request with new token
-        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(error.config);
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return api(originalRequest);
       } catch (refreshError) {
         console.error("Token refresh failed. Redirecting to login.");
         localStorage.removeItem("access_token");
