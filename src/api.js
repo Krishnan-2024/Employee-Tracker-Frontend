@@ -5,7 +5,7 @@ const getToken = () => localStorage.getItem("access_token");
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: "https://backend-jtcd.onrender.com",
+  baseURL: "https://backend-jtcd.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },
