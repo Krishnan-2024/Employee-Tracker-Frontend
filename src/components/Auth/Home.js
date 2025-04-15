@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/reviews/");
+        const response = await axios.get("https://backend-jtcd.onrender.com/admin/api/v1/reviews/");
         setReviews(response.data);
         
         // Get logged-in user
