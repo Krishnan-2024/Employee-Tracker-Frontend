@@ -20,7 +20,7 @@ const Dashboard = () => {
     }
 
     axios
-      .get("http://localhost:8000/api/v1/dashboard/", { headers: { Authorization: `Bearer ${token}` } })
+      .get("https://backend-jtcd.onrender.com/admin/api/v1/dashboard/", { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => setStats(response.data))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
