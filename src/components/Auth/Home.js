@@ -131,7 +131,7 @@ const Home = () => {
               <li key={review.id}>
                 <strong>{review.user}</strong> -{" "}
                 <span className="stars">
-                  {[...Array(review.rating)].map((_, i) => (
+                  {[...Array(Number(review.rating) || 0)].map((_, i) => (
                     <FaStar key={i} size={16} className="star active" />
                   ))}
                 </span>
