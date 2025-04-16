@@ -387,19 +387,26 @@ const WorkLogList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredLogs.map((log) => (
-              <tr key={log.id}>
-                <td>{log.task_name}</td>
-                <td>{new Date(log.start_time).toLocaleString()}</td>
-                <td>
-                  {log.end_time
-                    ? new Date(log.end_time).toLocaleString()
-                    : "N/A"}
-                </td>
-                <td>{log.description}</td>
-                <td>{log.status.replace("_", " ")}</td>
-              </tr>
-            ))}
+            {Array.isArray(filteredLogs) && filteredLogs.length > 0 ? (
+    filteredLogs.map((log) => (
+      <tr key={log.id}>
+        <td>{log.task_name}</td>
+        <td>{new Date(log.start_time).toLocaleString()}</td>
+        <td>
+          {log.end_time
+            ? new Date(log.end_time).toLocaleString()
+            : "N/A"}
+        </td>
+        <td>{log.description}</td>
+        <td>{log.status.replace("_", " ")}</td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="5">No logs available</td>
+    </tr>
+  )}
+
           </tbody>
         </table>
         <div className="export-buttons">
