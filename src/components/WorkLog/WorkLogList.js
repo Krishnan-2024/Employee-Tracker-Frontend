@@ -235,7 +235,9 @@ const WorkLogList = () => {
       setStatus(selected.status);
     }
   };
-  const hasPendingTasks = workLogs.some((log) => log.status === "pending");
+  const hasPendingTasks = Array.isArray(workLogs)
+  ? workLogs.some((log) => log.status === "pending")
+  : false;
   return (
     <div className="dashboard-container">
       <div className="top">
