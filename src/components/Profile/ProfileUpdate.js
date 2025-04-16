@@ -55,7 +55,6 @@ const ProfileUpdate = () => {
       <h2>Update Profile</h2>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-        {% csrf_token %}
         <input type="text" placeholder="Username" value={username} readOnly />
 
         <input
