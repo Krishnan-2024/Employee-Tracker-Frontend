@@ -207,6 +207,8 @@ const WorkLogList = () => {
     }
   };
 
+  { if workLogs.length < 1 ? "" : (
+
   const events = workLogs.map((log) => ({
     id: log.id,
     title: log.task_name,
@@ -219,6 +221,7 @@ const WorkLogList = () => {
         ? "yellow"
         : "green",
   }));
+   )
 
   const handleEventClick = (clickInfo) => {
     const taskId = clickInfo.event.id;
