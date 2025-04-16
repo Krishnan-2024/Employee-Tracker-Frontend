@@ -123,24 +123,7 @@ const Home = () => {
           <p>You have already submitted a review. Thank you!</p>
         )}
 
-        <ul className="review-list">
-          {reviews.length === 0 ? (
-            <p>No reviews yet.</p>
-          ) : "Hiii"}
-          //   reviews.map((review) => (
-          //     <li key={review.id}>
-          //       <strong>{review.user}</strong> -{" "}
-          //       <span className="stars">
-          //         {[...Array(Number(review.rating) || 0)].map((_, i) => (
-          //           <FaStar key={i} size={16} className="star active" />
-          //         ))}
-          //       </span>
-          //       <p>{review.comment}</p>
-          //       <small>{new Date(review.created_at).toLocaleDateString()}</small>
-          //     </li>
-          //   ))
-          // )}
-        </ul>
+        
       </section>
 
       {/* Contact Section */}
