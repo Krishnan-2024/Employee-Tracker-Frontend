@@ -7,6 +7,7 @@ const getToken = () => localStorage.getItem("access_token");
 const api = axios.create({
   baseURL: "https://backend-jtcd.onrender.com/admin/api",
   headers: { "Content-Type": "application/json" },
+  withCredentials: true, 
 });
 
 // Request Interceptor: Attach Authorization Token
