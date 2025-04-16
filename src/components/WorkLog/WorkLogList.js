@@ -127,6 +127,7 @@ const WorkLogList = () => {
     try {
       const response = await getWorkLogs();
       setWorkLogs(response.data);
+      console.log(workLogs)
       setFilteredLogs(response.data);
     } catch (err) {
       setError("Failed to fetch work logs");
