@@ -207,21 +207,20 @@ const WorkLogList = () => {
     }
   };
 
-  { if workLogs.length < 1 ? "" : (
-
-  const events = workLogs.map((log) => ({
-    id: log.id,
-    title: log.task_name,
-    start: log.start_time,
-    end: log.end_time,
-    color:
-      log.status === "pending"
-        ? "red"
-        : log.status === "in_progress"
-        ? "yellow"
-        : "green",
-  }));
-   )
+  const events = Array.isArray(workLogs)
+  ? workLogs.map((log) => ({
+      id: log.id,
+      title: log.task_name,
+      start: log.start_time,
+      end: log.end_time,
+      color:
+        log.status === "pending"
+          ? "red"
+          : log.status === "in_progress"
+          ? "yellow"
+          : "green",
+    }))
+  : [];
 
   const handleEventClick = (clickInfo) => {
     const taskId = clickInfo.event.id;
