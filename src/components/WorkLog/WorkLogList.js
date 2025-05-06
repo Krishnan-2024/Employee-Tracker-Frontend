@@ -127,7 +127,6 @@ const WorkLogList = () => {
     try {
       const response = await getWorkLogs();
       setWorkLogs(response.data);
-      console.log(workLogs)
       setFilteredLogs(response.data);
     } catch (err) {
       setError("Failed to fetch work logs");
@@ -207,20 +206,18 @@ const WorkLogList = () => {
     }
   };
 
-  const events = Array.isArray(workLogs)
-  ? workLogs.map((log) => ({
-      id: log.id,
-      title: log.task_name,
-      start: log.start_time,
-      end: log.end_time,
-      color:
-        log.status === "pending"
-          ? "red"
-          : log.status === "in_progress"
-          ? "yellow"
-          : "green",
-    }))
-  : [];
+  const events = workLogs.map((log) => ({
+    id: log.id,
+    title: log.task_name,
+    start: log.start_time,
+    end: log.end_time,
+    color:
+      log.status === "pending"
+        ? "red"
+        : log.status === "in_progress"
+        ? "yellow"
+        : "green",
+  }));
 
   const handleEventClick = (clickInfo) => {
     const taskId = clickInfo.event.id;
@@ -235,9 +232,7 @@ const WorkLogList = () => {
       setStatus(selected.status);
     }
   };
-  const hasPendingTasks = Array.isArray(workLogs)
-  ? workLogs.some((log) => log.status === "pending")
-  : false;
+  const hasPendingTasks = workLogs.some((log) => log.status === "pending");
   return (
     <div className="dashboard-container">
       <div className="top">
@@ -387,26 +382,19 @@ const WorkLogList = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(filteredLogs) && filteredLogs.length > 0 ? (
-    filteredLogs.map((log) => (
-      <tr key={log.id}>
-        <td>{log.task_name}</td>
-        <td>{new Date(log.start_time).toLocaleString()}</td>
-        <td>
-          {log.end_time
-            ? new Date(log.end_time).toLocaleString()
-            : "N/A"}
-        </td>
-        <td>{log.description}</td>
-        <td>{log.status.replace("_", " ")}</td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5">No logs available</td>
-    </tr>
-  )}
-
+            {filteredLogs.map((log) => (
+              <tr key={log.id}>
+                <td>{log.task_name}</td>
+                <td>{new Date(log.start_time).toLocaleString()}</td>
+                <td>
+                  {log.end_time
+                    ? new Date(log.end_time).toLocaleString()
+                    : "N/A"}
+                </td>
+                <td>{log.description}</td>
+                <td>{log.status.replace("_", " ")}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
         <div className="export-buttons">
