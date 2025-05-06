@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get("https://backend-jtcd.onrender.com/admin/api/v1/reviews/");
+        const response = await axios.get("http://localhost:8000/api/v1/reviews/");
         setReviews(response.data);
         
         // Get logged-in user
@@ -123,7 +123,24 @@ const Home = () => {
           <p>You have already submitted a review. Thank you!</p>
         )}
 
-        
+        <ul className="review-list">
+          {reviews.length === 0 ? (
+            <p>No reviews yet.</p>
+          ) : (
+            reviews.map((review) => (
+              <li key={review.id}>
+                <strong>{review.user}</strong> -{" "}
+                <span className="stars">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <FaStar key={i} size={16} className="star active" />
+                  ))}
+                </span>
+                <p>{review.comment}</p>
+                <small>{new Date(review.created_at).toLocaleDateString()}</small>
+              </li>
+            ))
+          )}
+        </ul>
       </section>
 
       {/* Contact Section */}
